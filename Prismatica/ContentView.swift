@@ -6,16 +6,16 @@
 //
 
 import SwiftUI
+import CoreMotion
 
 struct ContentView: View {
+    @StateObject private var motionManager = MotionManager()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        ParallaxCanvas()
+            .environmentObject(motionManager)
+            .preferredColorScheme(.dark)
+            .edgesIgnoringSafeArea(.all)
     }
 }
 
