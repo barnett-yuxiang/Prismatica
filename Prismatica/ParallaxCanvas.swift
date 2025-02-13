@@ -9,11 +9,10 @@ struct ParallaxCanvas: View {
         Canvas { context, size in
             let baseContext = context
 
-            // 先绘制背景发光粒子 - 几乎不动
+            // 先绘制背景发光粒子的底层光晕
             for particle in glowParticles {
                 var transform = CGAffineTransform.identity
 
-                // 背景粒子移动很少，但仍然有轻微移动
                 let xOffset = CGFloat(motionManager.roll * 30)
                 let yOffset = CGFloat(motionManager.pitch * 30)
 
@@ -22,14 +21,22 @@ struct ParallaxCanvas: View {
                     y: particle.position.y + yOffset
                 )
 
-                let rect = CGRect(x: -particle.size/2, y: -particle.size/2,
-                                width: particle.size, height: particle.size)
+                // 先绘制一个较大、更透明的圆形作为光晕
+                let glowRect = CGRect(x: -particle.size, y: -particle.size,
+                                    width: particle.size * 2, height: particle.size * 2)
 
-                // 增加发光效果
-                context.addFilter(.blur(radius: 2))
                 baseContext.fill(
-                    Circle().path(in: rect).applying(transform),
-                    with: .color(particle.color.opacity(0.4))  // 稍微增加不透明度
+                    Circle().path(in: glowRect).applying(transform),
+                    with: .color(particle.color.opacity(0.15))
+                )
+
+                // 再绘制核心的小圆点
+                let coreRect = CGRect(x: -particle.size/2, y: -particle.size/2,
+                                    width: particle.size, height: particle.size)
+
+                baseContext.fill(
+                    Circle().path(in: coreRect).applying(transform),
+                    with: .color(particle.color.opacity(0.4))
                 )
             }
 
@@ -73,17 +80,17 @@ struct ParallaxCanvas: View {
             particles = createLayeredParticles(screenSize)
 
             // 调整背景发光粒子
-            glowParticles = (0..<25).map { _ in  // 增加数量
+            glowParticles = (0..<25).map { _ in
                 Particle.random(
                     in: screenSize,
-                    minSize: 3,    // 增大最小尺寸
-                    maxSize: 6,    // 增大最大尺寸
+                    minSize: 4,    // 调整核心大小
+                    maxSize: 8,    // 调整核心大小
                     colors: [
-                        .blue.opacity(0.8),
-                        .purple.opacity(0.8),
-                        .pink.opacity(0.8),
-                        .mint.opacity(0.8)
-                    ],
+                        .blue,
+                        .purple,
+                        .pink,
+                        .mint
+                    ],  // 使用原始颜色，通过绘制方式控制透明度
                     rotation: 0
                 )
             }
