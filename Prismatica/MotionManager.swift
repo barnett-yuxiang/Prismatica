@@ -5,7 +5,7 @@ class MotionManager: ObservableObject {
     private let motionManager = CMMotionManager()
     @Published var pitch: Double = 0.0
     @Published var roll: Double = 0.0
-    
+
     init() {
         motionManager.deviceMotionUpdateInterval = 1/60
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
@@ -14,8 +14,8 @@ class MotionManager: ObservableObject {
             self?.roll = motion.attitude.roll
         }
     }
-    
+
     deinit {
         motionManager.stopDeviceMotionUpdates()
     }
-} 
+}

@@ -10,12 +10,15 @@ import CoreMotion
 
 struct ContentView: View {
     @StateObject private var motionManager = MotionManager()
-    
+
     var body: some View {
         ParallaxCanvas()
             .environmentObject(motionManager)
             .preferredColorScheme(.dark)
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea()
+            .onAppear {
+                print("ContentView appeared")
+            }
     }
 }
 

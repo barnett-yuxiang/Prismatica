@@ -8,14 +8,15 @@ struct Particle: Identifiable {
     var zPosition: Double
     var rotation: Double
     var alpha: Double
-    
+
     static func random(
         in rect: CGRect,
         minSize: CGFloat = 5,
         maxSize: CGFloat = 15,
         colors: [Color] = [.white, .pink, .blue, .purple, .mint],
         rotation: Double = 0,
-        alpha: Double = 1.0
+        alpha: Double = 1.0,
+        zPosition: Double? = nil
     ) -> Particle {
         Particle(
             position: CGPoint(
@@ -24,9 +25,9 @@ struct Particle: Identifiable {
             ),
             size: CGFloat.random(in: minSize...maxSize),
             color: colors.randomElement()!,
-            zPosition: Double.random(in: 0...1),
+            zPosition: zPosition ?? Double.random(in: 0...1),
             rotation: rotation,
             alpha: alpha
         )
     }
-} 
+}
