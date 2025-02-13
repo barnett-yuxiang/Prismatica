@@ -4,7 +4,10 @@ struct ParallaxCanvas: View {
     @EnvironmentObject private var motionManager: MotionManager
     @State private var particles: [Particle] = []
     @State private var glowParticles: [Particle] = []
-    @State private var lastUpdate = Date()  // 添加时间追踪
+    @State private var lastUpdate = Date()
+
+    // 添加一个计时器来更新粒子
+    let timer = Timer.publish(every: 1/60, on: .main, in: .common).autoconnect()
 
     var body: some View {
         Canvas { context, size in
@@ -50,9 +53,9 @@ struct ParallaxCanvas: View {
             for particle in particles {
                 var transform = CGAffineTransform.identity
 
-                let zFactor = particle.zPosition * particle.zPosition
-                let xOffset = CGFloat(motionManager.roll * 400 * zFactor)
-                let yOffset = CGFloat(motionManager.pitch * 400 * zFactor)
+                let zFactor = particle.zPosition * particle.zPosition * particle.zPosition * particle.zPosition
+                let xOffset = CGFloat(motionManager.roll * 800 * zFactor)
+                let yOffset = CGFloat(motionManager.pitch * 800 * zFactor)
 
                 let scale = 0.3 + particle.zPosition * 1.7
 
@@ -84,11 +87,6 @@ struct ParallaxCanvas: View {
                 )
             }
 
-            // 更新所有粒子的旋转角度
-            for i in particles.indices {
-                particles[i].rotation += particles[i].rotationSpeed * deltaTime
-            }
-
             context.addFilter(.blur(radius: 0.5))
         }
         .onAppear {
@@ -112,6 +110,18 @@ struct ParallaxCanvas: View {
                 )
             }
         }
+        .onReceive(timer) { currentTime in
+            // 在这里更新粒子的旋转
+            let deltaTime = currentTime.timeIntervalSince(lastUpdate)
+            lastUpdate = currentTime
+
+            // 使用新数组来更新状态
+            particles = particles.map { particle in
+                var updatedParticle = particle
+                updatedParticle.rotation += particle.rotationSpeed * deltaTime
+                return updatedParticle
+            }
+        }
         .background(Color.black)
     }
 
@@ -126,8 +136,8 @@ struct ParallaxCanvas: View {
                 maxSize: 12,
                 colors: [.white],
                 rotation: .random(in: 0...2*Double.pi),
-                zPosition: Double.random(in: 0...0.3),  // 远景
-                rotationSpeed: Double.random(in: -0.5...0.5) // 调整旋转速度
+                zPosition: Double.random(in: 0...0.3),
+                rotationSpeed: Double.random(in: -0.5...0.5)
             )
         }
 
@@ -139,8 +149,8 @@ struct ParallaxCanvas: View {
                 maxSize: 22,
                 colors: [.white],
                 rotation: .random(in: 0...2*Double.pi),
-                zPosition: Double.random(in: 0.3...0.7),  // 中景
-                rotationSpeed: Double.random(in: -0.5...0.5) // 调整旋转速度
+                zPosition: Double.random(in: 0.3...0.7),
+                rotationSpeed: Double.random(in: -0.5...0.5)
             )
         }
 
@@ -152,8 +162,21 @@ struct ParallaxCanvas: View {
                 maxSize: 35,
                 colors: [.white],
                 rotation: .random(in: 0...2*Double.pi),
-                zPosition: Double.random(in: 0.7...1.0),  // 近景
-                rotationSpeed: Double.random(in: -0.5...0.5) // 调整旋转速度
+                zPosition: Double.random(in: 0.7...0.9),  // 调整范围，为超近景留空间
+                rotationSpeed: Double.random(in: -0.5...0.5)
+            )
+        }
+
+        // 超近景层 (中等大小粒子，超快移动)
+        allParticles += (0..<3).map { _ in  // 减少到3个
+            Particle.random(
+                in: screenSize,
+                minSize: 25,      // 稍微调小一点
+                maxSize: 35,
+                colors: [.white],
+                rotation: .random(in: 0...2*Double.pi),
+                zPosition: Double.random(in: 0.97...1.0),  // 更加靠近眼前
+                rotationSpeed: Double.random(in: -2.0...2.0)  // 大幅增加旋转速度
             )
         }
 
