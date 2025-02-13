@@ -8,6 +8,7 @@ struct Particle: Identifiable {
     var zPosition: Double
     var rotation: Double
     var alpha: Double
+    var rotationSpeed: Double
 
     static func random(
         in rect: CGRect,
@@ -16,7 +17,8 @@ struct Particle: Identifiable {
         colors: [Color] = [.white, .pink, .blue, .purple, .mint],
         rotation: Double = 0,
         alpha: Double = 1.0,
-        zPosition: Double? = nil
+        zPosition: Double? = nil,
+        rotationSpeed: Double? = nil
     ) -> Particle {
         Particle(
             position: CGPoint(
@@ -27,7 +29,8 @@ struct Particle: Identifiable {
             color: colors.randomElement()!,
             zPosition: zPosition ?? Double.random(in: 0...1),
             rotation: rotation,
-            alpha: alpha
+            alpha: alpha,
+            rotationSpeed: rotationSpeed ?? Double.random(in: -0.5...0.5)
         )
     }
 }
