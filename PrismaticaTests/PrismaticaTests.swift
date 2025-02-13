@@ -2,7 +2,7 @@
 //  PrismaticaTests.swift
 //  PrismaticaTests
 //
-//  Created by yuxiang on 2025/2/13.
+//  Created by yuli.kamakura on 2025/2/13.
 //
 
 import Testing
