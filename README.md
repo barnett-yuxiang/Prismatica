@@ -3,7 +3,7 @@
 A 3D parallax effect implementation using SwiftUI Canvas and device motion. The project creates an immersive visual experience with floating triangles that respond to device movement.
 
 ## Video
-[![Prismatica Demo](assets/demo_thumbnail.png)](assets/IMG_2360.MOV)
+https://github.com/user-attachments/assets/5193ca34-4eae-4cae-8984-f6ae6f1cbbd7
 
 ## Requirements
 - My iPhone 12, not Pro / Max
