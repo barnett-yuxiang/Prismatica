@@ -1,6 +1,6 @@
 # Prismatica
 
-A 3D parallax effect implementation using SwiftUI Canvas and device motion. The project creates an immersive visual experience with floating triangles that respond to device movement.
+A **3D parallax effect** implementation using SwiftUI Canvas and device motion. The project creates an immersive visual experience with floating triangles that respond to device movement.
 
 ## Video
 https://github.com/user-attachments/assets/5193ca34-4eae-4cae-8984-f6ae6f1cbbd7
